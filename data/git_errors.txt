@@ -1,0 +1,565 @@
+# DebugMate RAG Git / GitHub 오류 기록 데이터셋
+
+이 문서는 AI 학습 프로젝트를 GitHub로 관리할 때 자주 발생하는 Git 오류와 해결 방법을 정리한 RAG 검색용 문서이다.
+
+---
+
+# 오류 1: git push rejected - fetch first
+
+## 상황
+
+로컬에서 commit 후 GitHub에 push할 때 다음 오류가 발생했다.
+
+```text
+! [rejected] main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/사용자명/저장소명.git'
+hint: Updates were rejected because the remote contains work that you do not have locally.
+```
+
+## 원인
+
+GitHub 원격 저장소에 로컬에는 없는 commit이 이미 존재한다.
+
+주로 다음 상황에서 발생한다.
+
+1. GitHub에서 README.md를 먼저 생성했다.
+2. 원격 저장소에 초기 commit이 있다.
+3. 로컬 프로젝트를 따로 만들고 나중에 remote를 연결했다.
+4. 로컬과 원격 저장소의 기록이 서로 다르다.
+
+## 해결 방법
+
+원격 저장소의 변경사항을 먼저 가져온다.
+
+```powershell
+git pull origin main --allow-unrelated-histories
+```
+
+충돌이 없으면 다시 push한다.
+
+```powershell
+git push -u origin main
+```
+
+충돌이 발생하면 VS Code에서 충돌 파일을 열고 정리한 뒤 commit한다.
+
+```powershell
+git add .
+git commit -m "Resolve merge conflict"
+git push
+```
+
+## 주의사항
+
+`--allow-unrelated-histories`는 로컬과 원격 저장소의 시작 기록이 다를 때 사용한다.
+
+무작정 `git push --force`를 쓰면 원격 저장소 기록이 덮어써질 수 있으므로 주의한다.
+
+## 관련 태그
+
+git_error, push_rejected, fetch_first, github, merge
+
+---
+
+# 오류 2: remote origin already exists
+
+## 상황
+
+원격 저장소를 연결하려고 할 때 다음 오류가 발생했다.
+
+```text
+error: remote origin already exists.
+```
+
+## 원인
+
+이미 `origin`이라는 이름의 remote가 등록되어 있다.
+
+같은 저장소에 대해 `git remote add origin ...`을 여러 번 실행하면 발생한다.
+
+## 확인 방법
+
+등록된 remote를 확인한다.
+
+```powershell
+git remote -v
+```
+
+## 해결 방법 1: 기존 origin URL을 그대로 사용
+
+이미 올바른 GitHub 주소가 등록되어 있다면 다시 추가할 필요 없다.
+
+```powershell
+git push -u origin main
+```
+
+## 해결 방법 2: origin URL 수정
+
+잘못된 주소가 등록되어 있다면 URL을 수정한다.
+
+```powershell
+git remote set-url origin https://github.com/juyoo0729/debugmate-rag.git
+```
+
+확인:
+
+```powershell
+git remote -v
+```
+
+## 해결 방법 3: origin 삭제 후 재등록
+
+필요하면 기존 origin을 삭제하고 다시 등록한다.
+
+```powershell
+git remote remove origin
+git remote add origin https://github.com/juyoo0729/debugmate-rag.git
+```
+
+## 주의사항
+
+`remote origin already exists`는 치명적인 오류가 아니다.
+
+이미 remote가 있으니 새로 추가하지 말고 확인하거나 수정하면 된다.
+
+## 관련 태그
+
+git_error, remote_origin, github, repository
+
+---
+
+# 오류 3: branch 이름이 master와 main으로 달라짐
+
+## 상황
+
+로컬 브랜치는 `master`이고 GitHub 기본 브랜치는 `main`일 때 push가 헷갈릴 수 있다.
+
+예시:
+
+```text
+On branch master
+```
+
+또는:
+
+```text
+error: src refspec main does not match any
+```
+
+## 원인
+
+Git 초기화 시 기본 브랜치 이름이 `master`로 생성되었지만, GitHub는 보통 `main`을 기본 브랜치로 사용한다.
+
+## 해결 방법
+
+로컬 브랜치 이름을 `main`으로 변경한다.
+
+```powershell
+git branch -M main
+```
+
+그다음 push한다.
+
+```powershell
+git push -u origin main
+```
+
+## 확인 방법
+
+```powershell
+git branch
+```
+
+현재 브랜치 앞에 `*`가 표시된다.
+
+```text
+* main
+```
+
+## 주의사항
+
+새 프로젝트에서는 처음부터 다음 순서로 진행하면 혼란을 줄일 수 있다.
+
+```powershell
+git init
+git branch -M main
+git remote add origin https://github.com/juyoo0729/debugmate-rag.git
+git add .
+git commit -m "Initial commit"
+git push -u origin main
+```
+
+## 관련 태그
+
+git_error, branch, main, master, github
+
+---
+
+# 오류 4: nothing to commit, working tree clean
+
+## 상황
+
+commit을 하려고 했는데 다음 메시지가 나온다.
+
+```text
+nothing to commit, working tree clean
+```
+
+## 의미
+
+현재 Git이 추적하는 파일 기준으로 변경사항이 없다는 뜻이다.
+
+오류라기보다 정상 상태 메시지이다.
+
+## 가능한 원인
+
+1. 이미 commit을 완료했다.
+2. 파일을 수정하지 않았다.
+3. 수정한 파일이 `.gitignore`에 의해 무시되고 있다.
+4. 다른 폴더에서 작업하고 있다.
+
+## 확인 방법
+
+현재 위치를 확인한다.
+
+```powershell
+pwd
+```
+
+Git 상태를 확인한다.
+
+```powershell
+git status
+```
+
+무시된 파일인지 확인한다.
+
+```powershell
+git check-ignore -v 파일명
+```
+
+## 해결 방법
+
+변경한 파일이 있다면 저장한 뒤 다시 확인한다.
+
+```powershell
+git status
+```
+
+새 파일이 untracked로 보이면 add한다.
+
+```powershell
+git add 파일명
+git commit -m "Add file"
+```
+
+## 주의사항
+
+`nothing to commit`은 대부분 문제 없는 상태이다.
+
+다만 “분명히 수정했는데 안 보이는 경우”에는 현재 폴더와 `.gitignore`를 먼저 확인한다.
+
+## 관련 태그
+
+git_status, clean_tree, commit, gitignore
+
+---
+
+# 오류 5: untracked files
+
+## 상황
+
+`git status` 실행 시 다음 메시지가 나온다.
+
+```text
+Untracked files:
+  results/ragas_all_results.csv
+  results/ragas_summary.csv
+```
+
+## 의미
+
+Git이 아직 추적하지 않는 새 파일이라는 뜻이다.
+
+## 해결 방법
+
+GitHub에 올릴 파일이면 `git add`를 실행한다.
+
+```powershell
+git add results/ragas_all_results.csv results/ragas_summary.csv
+git commit -m "Add RAGAS evaluation results"
+```
+
+전체 새 파일을 올리고 싶으면 다음을 사용할 수 있다.
+
+```powershell
+git add .
+git commit -m "Update project files"
+```
+
+## 주의사항
+
+`.env`, `.venv`, 대용량 vectorstore, API key 파일은 올리면 안 된다.
+
+`git add .`를 쓰기 전에는 반드시 `git status`로 어떤 파일이 올라갈지 확인한다.
+
+## 관련 태그
+
+git_status, untracked_files, git_add, github
+
+---
+
+# 오류 6: modified files not staged for commit
+
+## 상황
+
+`git status` 실행 시 다음 메시지가 나온다.
+
+```text
+Changes not staged for commit:
+  modified: README.md
+  modified: requirements.txt
+```
+
+## 의미
+
+파일이 수정되었지만 아직 commit 대상으로 추가되지 않았다는 뜻이다.
+
+## 해결 방법
+
+수정 파일을 staging area에 추가한다.
+
+```powershell
+git add README.md requirements.txt
+```
+
+그다음 commit한다.
+
+```powershell
+git commit -m "Update README and requirements"
+```
+
+## 한번에 처리하기
+
+이미 Git이 추적 중인 수정 파일만 commit하려면 다음도 가능하다.
+
+```powershell
+git commit -am "Update tracked files"
+```
+
+단, 새 파일은 `-a` 옵션으로 추가되지 않는다.
+
+## 관련 태그
+
+git_status, modified, staged, commit
+
+---
+
+# 오류 7: .env 또는 API key가 GitHub에 올라갈 위험
+
+## 상황
+
+OpenAI API 키를 코드나 노트북에 직접 적으면 GitHub에 올라갈 수 있다.
+
+예시:
+
+```text
+OPENAI_API_KEY=sk-...
+```
+
+## 원인
+
+`.env`가 `.gitignore`에 없거나, 노트북 출력에 실제 키가 남아 있을 수 있다.
+
+## 해결 방법
+
+`.gitignore`에 다음을 추가한다.
+
+```gitignore
+.env
+*.key
+*.pem
+```
+
+Git이 `.env`를 무시하는지 확인한다.
+
+```powershell
+git check-ignore -v .env
+```
+
+노트북에 실제 키 문자열이 있는지 확인한다.
+
+```powershell
+Select-String -Path .\notebooks\*.ipynb -Pattern "sk-"
+```
+
+아무 결과도 나오지 않아야 한다.
+
+## 이미 키가 올라간 경우
+
+GitHub에 실제 API key가 올라간 적이 있다면 해당 키를 폐기하고 새 키를 발급해야 한다.
+
+파일에서 키를 지우는 것만으로는 Git 기록에 남을 수 있다.
+
+## 관련 태그
+
+security, api_key, gitignore, openai, github
+
+---
+
+# 오류 8: vectorstore/.gitkeep가 삭제됨
+
+## 상황
+
+vectorstore 폴더를 비우다가 `.gitkeep` 파일까지 삭제되었다.
+
+```text
+deleted: vectorstore/.gitkeep
+```
+
+## 원인
+
+다음 명령어로 폴더 내부 파일을 모두 삭제하면서 `.gitkeep`도 함께 삭제되었다.
+
+```powershell
+Remove-Item -Recurse -Force .\vectorstore\*
+```
+
+## 해결 방법
+
+`.gitkeep` 파일을 다시 만든다.
+
+```powershell
+mkdir vectorstore -Force
+New-Item vectorstore\.gitkeep -ItemType File -Force
+```
+
+Git 상태를 확인한다.
+
+```powershell
+git status
+```
+
+## 설명
+
+Git은 빈 폴더를 추적하지 않는다.
+
+그래서 빈 폴더를 유지하려면 `.gitkeep` 같은 작은 파일을 넣어둔다.
+
+## 관련 태그
+
+gitkeep, vectorstore, git_status, empty_folder
+
+---
+
+# 오류 9: LF will be replaced by CRLF
+
+## 상황
+
+commit할 때 다음 경고가 나온다.
+
+```text
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+```
+
+## 의미
+
+줄바꿈 형식이 바뀔 수 있다는 Git 경고이다.
+
+Windows에서는 보통 LF와 CRLF 줄바꿈 차이 때문에 나타난다.
+
+## 해결 방법
+
+대부분의 경우 무시해도 된다.
+
+줄바꿈을 통일하고 싶으면 `.gitattributes`를 추가할 수 있다.
+
+```text
+* text=auto
+```
+
+## 주의사항
+
+이 메시지는 일반적으로 코드 실행 오류가 아니다.
+
+Git이 Windows 줄바꿈 방식을 안내하는 메시지에 가깝다.
+
+## 관련 태그
+
+git_warning, lf, crlf, windows
+
+---
+
+# 오류 10: GitHub 저장소에는 있는데 로컬 폴더에는 없음
+
+## 상황
+
+GitHub에는 파일이 보이지만 로컬에는 없거나, 반대로 로컬에는 있는데 GitHub에는 없는 상황이 발생한다.
+
+## 원인
+
+다음 중 하나일 수 있다.
+
+1. 아직 push하지 않았다.
+2. 원격 변경사항을 pull하지 않았다.
+3. 다른 브랜치에서 작업 중이다.
+4. 다른 로컬 폴더에서 작업 중이다.
+
+## 확인 방법
+
+현재 폴더 확인:
+
+```powershell
+pwd
+```
+
+현재 브랜치 확인:
+
+```powershell
+git branch
+```
+
+Git 상태 확인:
+
+```powershell
+git status
+```
+
+원격 주소 확인:
+
+```powershell
+git remote -v
+```
+
+## 해결 방법
+
+로컬 변경사항을 GitHub에 올리려면:
+
+```powershell
+git add .
+git commit -m "Update project"
+git push
+```
+
+GitHub 변경사항을 로컬로 가져오려면:
+
+```powershell
+git pull origin main
+```
+
+## 주의사항
+
+AI 학습 프로젝트를 여러 폴더에서 동시에 작업하면 혼란이 생길 수 있다.
+
+예:
+
+```text
+C:\AI_study\rag-eval-practice
+C:\AI_study\debugmate-rag
+```
+
+현재 어떤 폴더에서 작업 중인지 항상 `pwd`로 확인한다.
+
+## 관련 태그
+
+github, local_repo, remote_repo, branch, push_pull
