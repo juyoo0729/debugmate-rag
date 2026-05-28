@@ -1,0 +1,822 @@
+# DebugMate RAG RAGAS / LangChain 오류 기록 데이터셋
+
+이 문서는 RAGAS, LangChain, Chroma, OpenAIEmbeddings, ChatOpenAI를 사용할 때 자주 발생하는 오류와 해결 방법을 정리한 RAG 검색용 문서이다.
+
+---
+
+# 오류 1: RAGAS evaluate import 오류
+
+## 상황
+
+RAGAS 평가를 위해 다음 코드를 실행했다.
+
+```python
+from ragas import evaluate
+```
+
+하지만 import 오류가 발생했다.
+
+```text
+ModuleNotFoundError: No module named 'ragas'
+```
+
+## 원인
+
+현재 Python 가상환경에 `ragas`가 설치되어 있지 않다.
+
+또는 Jupyter Notebook이 프로젝트 가상환경이 아닌 다른 Python 커널을 사용하고 있을 수 있다.
+
+## 해결 방법
+
+현재 Python 경로를 확인한다.
+
+```powershell
+python -c "import sys; print(sys.executable)"
+```
+
+RAGAS를 설치한다.
+
+```powershell
+python -m pip install ragas==0.1.21
+```
+
+프로젝트 전체 의존성을 설치하려면 다음 명령어를 사용한다.
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+## 주의사항
+
+RAGAS는 버전별로 API가 달라질 수 있다.
+
+기존 실습 코드와 호환성을 맞추기 위해 `ragas==0.1.21`을 사용한다.
+
+## 관련 태그
+
+ragas, import_error, package_error, evaluation
+
+---
+
+# 오류 2: RAGAS와 LangChain 버전 충돌
+
+## 상황
+
+`from ragas import evaluate`는 성공했지만 내부 import 과정에서 다음과 같은 오류가 발생했다.
+
+```text
+ModuleNotFoundError: No module named 'langchain_community.chat_models.vertexai'
+```
+
+## 원인
+
+RAGAS와 LangChain 계열 패키지의 버전 조합이 맞지 않는다.
+
+LangChain은 여러 패키지로 분리되어 있기 때문에 일부만 최신이거나 일부만 오래된 경우 모듈 구조가 맞지 않을 수 있다.
+
+## 해결 방법
+
+프로젝트에서 검증한 버전 조합을 사용한다.
+
+```text
+ragas==0.1.21
+langchain==0.1.20
+langchain-core==0.1.52
+langchain-community==0.0.38
+langchain-openai==0.1.7
+langchain-text-splitters==0.0.2
+langchain-chroma==0.1.4
+```
+
+설치 명령어:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+## 주의사항
+
+무작정 `pip install -U langchain ragas`를 실행하면 오히려 기존 코드와 맞지 않을 수 있다.
+
+RAG 실험 프로젝트에서는 검증된 버전을 고정하는 것이 좋다.
+
+## 관련 태그
+
+ragas, langchain, version_error, dependency
+
+---
+
+# 오류 3: LangChain Document import 오류
+
+## 상황
+
+다음 코드를 실행할 때 오류가 발생했다.
+
+```python
+from langchain_core.documents import Document
+```
+
+오류 메시지:
+
+```text
+ModuleNotFoundError: No module named 'langchain_core'
+```
+
+## 원인
+
+`langchain-core` 패키지가 설치되어 있지 않다.
+
+또는 현재 실행 중인 Python 환경이 프로젝트 가상환경이 아니다.
+
+## 해결 방법
+
+`langchain-core`를 설치한다.
+
+```powershell
+python -m pip install langchain-core==0.1.52
+```
+
+또는 전체 requirements를 설치한다.
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+현재 Python 환경 확인:
+
+```powershell
+python -c "import sys; print(sys.executable)"
+```
+
+## 주의사항
+
+LangChain은 다음 패키지들이 함께 쓰인다.
+
+```text
+langchain
+langchain-core
+langchain-community
+langchain-openai
+langchain-text-splitters
+langchain-chroma
+```
+
+하나만 설치되어 있다고 전체 기능이 동작하지 않는다.
+
+## 관련 태그
+
+langchain_core, document, import_error, python_env
+
+---
+
+# 오류 4: TextLoader import 오류
+
+## 상황
+
+텍스트 문서를 로드하기 위해 다음 코드를 실행했다.
+
+```python
+from langchain_community.document_loaders import TextLoader
+```
+
+하지만 import 오류가 발생했다.
+
+## 원인
+
+`langchain-community` 패키지가 설치되어 있지 않거나 버전이 맞지 않는다.
+
+## 해결 방법
+
+`langchain-community`를 설치한다.
+
+```powershell
+python -m pip install langchain-community==0.0.38
+```
+
+또는 프로젝트 의존성 전체를 설치한다.
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+## 주의사항
+
+LangChain의 document loader는 `langchain-community` 쪽에 포함되는 경우가 많다.
+
+## 관련 태그
+
+textloader, langchain_community, document_loader
+
+---
+
+# 오류 5: RecursiveCharacterTextSplitter import 오류
+
+## 상황
+
+문서를 chunk로 분할하기 위해 다음 코드를 실행했다.
+
+```python
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+```
+
+하지만 import 오류가 발생했다.
+
+## 원인
+
+`langchain-text-splitters` 패키지가 설치되어 있지 않다.
+
+## 해결 방법
+
+```powershell
+python -m pip install langchain-text-splitters==0.0.2
+```
+
+또는:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+## 설명
+
+`RecursiveCharacterTextSplitter`는 문서를 일정 크기의 chunk로 나누는 데 사용한다.
+
+RAG에서는 문서 전체를 한 번에 embedding하지 않고 적절한 크기로 나눠 검색 정확도를 높인다.
+
+## 관련 태그
+
+text_splitter, chunking, langchain, rag
+
+---
+
+# 오류 6: OpenAIEmbeddings API key 오류
+
+## 상황
+
+다음 코드를 실행했다.
+
+```python
+from langchain_openai import OpenAIEmbeddings
+
+embeddings = OpenAIEmbeddings()
+```
+
+오류 메시지:
+
+```text
+OpenAIError: The api_key client option must be set
+```
+
+## 원인
+
+현재 Python 실행 환경에 `OPENAI_API_KEY` 환경변수가 설정되어 있지 않다.
+
+또는 `.env` 파일을 만들었지만 코드에서 로드하지 않았다.
+
+## 해결 방법
+
+프로젝트 루트에 `.env` 파일을 만든다.
+
+```text
+OPENAI_API_KEY=본인_API_KEY
+```
+
+Python 코드에서 로드한다.
+
+```python
+from dotenv import load_dotenv
+import os
+
+load_dotenv(".env")
+
+print(os.environ.get("OPENAI_API_KEY") is not None)
+```
+
+Notebook이 `notebooks/` 폴더 안에서 실행된다면 다음처럼 작성한다.
+
+```python
+load_dotenv("../.env")
+```
+
+## 주의사항
+
+API 키를 코드나 노트북에 직접 적지 않는다.
+
+GitHub에 올리기 전에 다음 명령어로 실제 키가 남아 있는지 확인한다.
+
+```powershell
+Select-String -Path .\notebooks\*.ipynb -Pattern "sk-"
+```
+
+## 관련 태그
+
+openai, embeddings, api_key, dotenv, security
+
+---
+
+# 오류 7: ChatOpenAI NameError
+
+## 상황
+
+다음 코드를 실행할 때 오류가 발생했다.
+
+```python
+llm = ChatOpenAI(
+    model="gpt-4o-mini",
+    temperature=0
+)
+```
+
+오류 메시지:
+
+```text
+NameError: name 'ChatOpenAI' is not defined
+```
+
+## 원인
+
+`ChatOpenAI`를 import하지 않았다.
+
+## 해결 방법
+
+먼저 import를 추가한다.
+
+```python
+from langchain_openai import ChatOpenAI
+```
+
+전체 예시:
+
+```python
+from langchain_openai import ChatOpenAI
+
+llm = ChatOpenAI(
+    model="gpt-4o-mini",
+    temperature=0
+)
+```
+
+## 주의사항
+
+`OpenAIEmbeddings`와 `ChatOpenAI`는 모두 `langchain_openai`에서 import한다.
+
+```python
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+```
+
+## 관련 태그
+
+chatopenai, name_error, langchain_openai, import
+
+---
+
+# 오류 8: Chroma import 오류
+
+## 상황
+
+Chroma를 사용하기 위해 다음 코드를 실행했다.
+
+```python
+from langchain_chroma import Chroma
+```
+
+오류 메시지:
+
+```text
+ModuleNotFoundError: No module named 'langchain_chroma'
+```
+
+또는:
+
+```text
+ModuleNotFoundError: No module named 'chromadb'
+```
+
+## 원인
+
+`langchain-chroma` 또는 `chromadb`가 설치되어 있지 않다.
+
+또는 다른 Python 환경에 설치했을 수 있다.
+
+## 해결 방법
+
+현재 Python 버전을 확인한다.
+
+```powershell
+python --version
+python -c "import sys; print(sys.executable)"
+```
+
+권장 환경:
+
+```text
+Python 3.11.x
+```
+
+설치:
+
+```powershell
+python -m pip install chromadb==0.5.23 langchain-chroma==0.1.4
+```
+
+또는:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+설치 확인:
+
+```powershell
+python -c "import chromadb; import langchain_chroma; print('Chroma 설치 성공')"
+```
+
+## 주의사항
+
+Windows에서 Python 3.12로 Chroma 설치 시 `chroma-hnswlib` 빌드 오류가 발생할 수 있다.
+
+이 경우 Python 3.11 가상환경을 사용하는 것이 안정적이다.
+
+## 관련 태그
+
+chroma, chromadb, langchain_chroma, vector_db
+
+---
+
+# 오류 9: Chroma vectorstore 파일 삭제 실패
+
+## 상황
+
+Windows에서 Chroma vectorstore 폴더를 삭제하려고 할 때 오류가 발생했다.
+
+```text
+PermissionError: 다른 프로세스가 파일을 사용 중이기 때문에 프로세스가 액세스할 수 없습니다
+```
+
+예시 파일:
+
+```text
+chroma.sqlite3
+data_level0.bin
+header.bin
+length.bin
+link_lists.bin
+```
+
+## 원인
+
+Jupyter Notebook, Python 프로세스, Streamlit 앱이 Chroma DB 파일을 잡고 있다.
+
+Windows에서는 사용 중인 파일을 삭제할 수 없다.
+
+## 해결 방법
+
+1. Jupyter 커널을 종료한다.
+2. Streamlit 서버를 종료한다.
+3. VS Code를 닫는다.
+4. Python 프로세스를 종료한다.
+
+```powershell
+taskkill /F /IM python.exe
+```
+
+그다음 삭제한다.
+
+```powershell
+Remove-Item -Recurse -Force .\vectorstore\*
+```
+
+## 대안
+
+실험용 RAG에서는 디스크 저장 없이 메모리 Chroma를 사용할 수 있다.
+
+```python
+vectorstore = Chroma.from_documents(
+    documents=splits,
+    embedding=embeddings
+)
+```
+
+디스크에 저장하려면 `persist_directory`를 사용한다.
+
+```python
+vectorstore = Chroma.from_documents(
+    documents=splits,
+    embedding=embeddings,
+    persist_directory="./vectorstore/debugmate"
+)
+```
+
+## 주의사항
+
+디스크 저장형 Chroma는 재사용성이 좋지만, Windows에서 파일 잠금 문제가 발생할 수 있다.
+
+초기 개발 단계에서는 메모리 Chroma로 먼저 검증하는 것이 편하다.
+
+## 관련 태그
+
+chroma, vectorstore, permission_error, windows, file_lock
+
+---
+
+# 오류 10: RAGAS 데이터셋 컬럼 이름 문제
+
+## 상황
+
+RAGAS 평가용 Dataset을 만들 때 컬럼 이름이 맞지 않아 평가가 실패하거나 예상과 다른 결과가 나온다.
+
+## 원인
+
+RAGAS 버전별로 기대하는 컬럼 이름이 다를 수 있다.
+
+일반적으로 다음 필드가 필요하다.
+
+```text
+question 또는 user_input
+answer 또는 response
+contexts 또는 retrieved_contexts
+ground_truth 또는 reference
+```
+
+## 해결 방법
+
+현재 사용하는 RAGAS 버전에 맞게 Dataset 컬럼명을 구성한다.
+
+예시:
+
+```python
+from datasets import Dataset
+
+dataset = Dataset.from_dict({
+    "question": questions,
+    "answer": answers,
+    "contexts": contexts,
+    "ground_truth": ground_truths,
+})
+```
+
+또는 결과 DataFrame에서는 다음처럼 보일 수 있다.
+
+```text
+user_input
+retrieved_contexts
+response
+reference
+faithfulness
+answer_relevancy
+context_precision
+context_recall
+```
+
+## 주의사항
+
+RAGAS 평가가 실행되더라도 컬럼 해석이 다르면 결과가 이상할 수 있다.
+
+평가 후 DataFrame 컬럼을 반드시 확인한다.
+
+```python
+result_df.columns
+```
+
+## 관련 태그
+
+ragas, dataset, evaluation, column_name
+
+---
+
+# 오류 11: RAGAS 평가 점수가 이상하게 나옴
+
+## 상황
+
+답변과 기준 답변이 거의 같은데 `answer_relevancy`가 0.0으로 나오는 경우가 있다.
+
+## 원인
+
+RAGAS 평가 모델이 한국어 짧은 문장이나 특정 문맥에서 불안정한 점수를 줄 수 있다.
+
+또는 질문, 답변, reference, contexts 사이의 형식이 평가 모델이 기대하는 방식과 다를 수 있다.
+
+## 해결 방법
+
+문제 행을 따로 확인한다.
+
+```python
+bad_rows = result_df[
+    (result_df["faithfulness"] < 0.8) |
+    (result_df["answer_relevancy"] < 0.7)
+]
+```
+
+검색 문맥과 답변을 직접 출력한다.
+
+```python
+for idx, row in bad_rows.iterrows():
+    print("=" * 80)
+    print("질문:", row["user_input"])
+    print("답변:", row["response"])
+    print("기준 답변:", row["reference"])
+    print("검색 문맥:", row["retrieved_contexts"])
+```
+
+## 주의사항
+
+RAGAS 점수는 참고 지표이지 절대적인 정답 판정은 아니다.
+
+정량 평가와 사람이 직접 보는 정성 평가를 함께 사용해야 한다.
+
+## 관련 태그
+
+ragas, evaluation, answer_relevancy, faithfulness
+
+---
+
+# 오류 12: 검색은 됐는데 답변이 “문서에서 확인되지 않습니다”라고 나옴
+
+## 상황
+
+retrieved context 안에는 답이 있는데 LLM 답변은 다음처럼 나온다.
+
+```text
+문서에서 확인되지 않습니다.
+```
+
+## 원인
+
+프롬프트가 너무 보수적으로 작성되어 모델이 조금만 애매해도 답변을 회피한다.
+
+예:
+
+```text
+문맥에 없는 내용은 추측하지 말고 '문서에서 확인되지 않습니다'라고 말해라.
+```
+
+## 해결 방법
+
+프롬프트를 완화한다.
+
+```text
+규칙:
+1. 제공된 문맥에서 확인 가능한 내용을 바탕으로 답변해라.
+2. 문맥에 질문과 직접 관련된 문장이 있으면 그 내용을 우선 사용해라.
+3. 정말 관련 정보가 전혀 없을 때만 '문서에서 확인되지 않습니다'라고 답해라.
+4. 답변은 1~2문장으로 간결하게 작성해라.
+```
+
+## 주의사항
+
+RAG 프롬프트는 너무 자유로워도 환각이 늘고, 너무 엄격해도 답변 회피가 늘어난다.
+
+적절한 균형이 필요하다.
+
+## 관련 태그
+
+prompt, rag, answer_generation, strict_prompt
+
+---
+
+# 오류 13: chunk_size가 너무 작거나 큼
+
+## 상황
+
+RAG 실험에서 chunk_size에 따라 답변 품질이 달라진다.
+
+## 원인
+
+chunk_size는 문서를 얼마나 큰 조각으로 나눌지 결정한다.
+
+너무 작으면 문맥이 잘려 필요한 정보를 충분히 담지 못한다.
+
+너무 크면 불필요한 정보가 함께 들어가 답변의 초점이 흐려질 수 있다.
+
+## 해결 방법
+
+여러 chunk_size를 비교한다.
+
+예시:
+
+```text
+chunk_size=500, chunk_overlap=50
+chunk_size=1000, chunk_overlap=100
+chunk_size=1500, chunk_overlap=150
+```
+
+RAGAS로 결과를 비교한다.
+
+```python
+summary = all_results.groupby(
+    ["experiment", "chunk_size", "chunk_overlap", "k"]
+)[score_cols].mean().reset_index()
+```
+
+## 관찰 결과 예시
+
+특정 문서에서는 다음 설정이 안정적이었다.
+
+```text
+chunk_size=1000
+chunk_overlap=100
+k=3
+```
+
+## 관련 태그
+
+chunk_size, chunk_overlap, ragas, retrieval, evaluation
+
+---
+
+# 오류 14: retriever k값을 높이면 항상 좋아지는가
+
+## 상황
+
+검색할 chunk 개수인 `k`를 높이면 RAG 품질이 항상 좋아진다고 생각할 수 있다.
+
+## 설명
+
+`k`를 높이면 필요한 정보를 찾을 가능성은 높아질 수 있다.
+
+하지만 불필요한 문맥도 함께 들어와 답변 초점이 흐려질 수 있다.
+
+## 해결 방법
+
+여러 k값을 비교한다.
+
+예:
+
+```text
+k=2
+k=3
+k=5
+k=7
+```
+
+RAGAS 지표를 비교한다.
+
+```text
+context_precision
+context_recall
+faithfulness
+answer_relevancy
+```
+
+## 주의사항
+
+`k`는 높을수록 좋은 값이 아니다.
+
+문서 크기와 질문 유형에 따라 적절한 값을 찾아야 한다.
+
+## 관련 태그
+
+retriever, k_value, context_precision, context_recall, rag
+
+---
+
+# 오류 15: Chroma를 디스크에 저장할지 메모리로 쓸지 헷갈림
+
+## 상황
+
+Chroma 사용 시 `persist_directory`를 지정할지 고민된다.
+
+## 설명
+
+Chroma는 두 방식으로 사용할 수 있다.
+
+### 1. 메모리 Chroma
+
+```python
+vectorstore = Chroma.from_documents(
+    documents=splits,
+    embedding=embeddings
+)
+```
+
+특징:
+
+* 실행 중에만 유지된다.
+* 파일 잠금 문제가 적다.
+* 개발 초기 테스트에 좋다.
+
+### 2. 저장형 Chroma
+
+```python
+vectorstore = Chroma.from_documents(
+    documents=splits,
+    embedding=embeddings,
+    persist_directory="./vectorstore/debugmate"
+)
+```
+
+특징:
+
+* embedding 결과를 재사용할 수 있다.
+* 앱 실행 시 재생성 비용을 줄일 수 있다.
+* Windows에서는 파일 잠금 문제에 주의해야 한다.
+
+## 추천
+
+DLthon MVP 초기 개발 단계에서는 메모리 Chroma로 먼저 구현한다.
+
+작동이 안정되면 저장형 Chroma로 바꾼다.
+
+## 관련 태그
+
+chroma, persist_directory, vectorstore, memory, rag
