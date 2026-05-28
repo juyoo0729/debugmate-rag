@@ -1,7 +1,11 @@
-import os
 from pathlib import Path
 from typing import List, Optional, Dict, Any
+from uuid import uuid4
+
 from dotenv import load_dotenv
+
+import chromadb
+from chromadb.config import Settings
 
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -21,18 +25,11 @@ def split_documents(
     chunk_size: int = 1000,
     chunk_overlap: int = 100,
 ) -> List[Document]:
-    """
-    문서를 chunk 단위로 분할한다.
-    metadata는 chunk에도 유지된다.
-    """
-
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
     )
-
-    splits = splitter.split_documents(docs)
-    return splits
+    return splitter.split_documents(docs)
 
 
 def build_vectorstore(
@@ -44,8 +41,8 @@ def build_vectorstore(
     """
     Chroma vectorstore를 생성한다.
 
-    persist_directory가 None이면 메모리 Chroma로 동작한다.
-    persist_directory를 지정하면 디스크 저장형 Chroma로 동작한다.
+    현재 DLthon MVP에서는 안정성을 위해 기본적으로 메모리 Chroma를 사용한다.
+    Streamlit cache / 기존 SQLite collection 꼬임을 피하기 위해 collection_name을 매번 새로 만든다.
     """
 
     splits = split_documents(
@@ -56,16 +53,36 @@ def build_vectorstore(
 
     embeddings = OpenAIEmbeddings()
 
+    collection_name = f"debugmate_{uuid4().hex}"
+
     if persist_directory:
-        vectorstore = Chroma.from_documents(
-            documents=splits,
-            embedding=embeddings,
-            persist_directory=persist_directory,
+        client = chromadb.PersistentClient(
+            path=persist_directory,
+            settings=Settings(
+                anonymized_telemetry=False,
+            ),
         )
-    else:
+
         vectorstore = Chroma.from_documents(
             documents=splits,
             embedding=embeddings,
+            client=client,
+            collection_name=collection_name,
+        )
+
+    else:
+        client = chromadb.Client(
+            Settings(
+                anonymized_telemetry=False,
+                is_persistent=False,
+            )
+        )
+
+        vectorstore = Chroma.from_documents(
+            documents=splits,
+            embedding=embeddings,
+            client=client,
+            collection_name=collection_name,
         )
 
     return vectorstore
@@ -77,13 +94,6 @@ def search_documents(
     k: int = 4,
     use_router: bool = True,
 ) -> Dict[str, Any]:
-    """
-    사용자 질문을 검색한다.
-
-    use_router=True이면 질문 유형을 분류하고,
-    route에 맞는 metadata filter를 적용한다.
-    """
-
     route = route_query(query) if use_router else "general"
     metadata_filter = get_route_filter(route) if use_router else None
 
@@ -108,10 +118,6 @@ def search_documents(
 
 
 def print_search_results(search_result: Dict[str, Any]) -> None:
-    """
-    검색 결과를 보기 좋게 출력한다.
-    """
-
     print("=" * 80)
     print("질문:", search_result["query"])
     print("선택 route:", search_result["route"])
