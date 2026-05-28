@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ragas-env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Secrets
+.env
+*.key
+*.pem
+
+# Vector DB
+vectorstore/*
+!vectorstore/.gitkeep
+
+# Model/cache files
+models/
+.cache/
+huggingface/
+ollama/
+
+# Large temporary results
+results/*.zip
+results/*.pkl
+results/*.pickle
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -369,45 +369,112 @@ error_logs.txt
 
 ---
 
-## 14. 실행 방법
+## 실행 방법
 
-### 1. 저장소 clone
+### 1. 프로젝트 폴더로 이동
 
-```bash
-git clone https://github.com/juyoo0729/debugmate-rag.git
-cd debugmate-rag
+Windows PowerShell에서 프로젝트 폴더로 이동합니다.
+
+```powershell
+cd C:\AI_study\debugmate-rag
 ```
+
+현재 위치가 프로젝트 폴더인지 확인합니다.
+
+```powershell
+pwd
+```
+
+출력이 아래와 비슷해야 합니다.
+
+```text
+C:\AI_study\debugmate-rag
+```
+
+---
 
 ### 2. 가상환경 생성
 
-```bash
+아직 `.venv` 폴더가 없다면 먼저 가상환경을 생성합니다.
+
+```powershell
 python -m venv .venv
 ```
 
-### 3. 가상환경 활성화
+생성 후 `.venv` 폴더가 있는지 확인합니다.
 
-Windows PowerShell:
+```powershell
+dir -Force
+```
+
+목록에 `.venv`가 보여야 합니다.
+
+---
+
+### 3.가상환경 생성 및 활성화
+
+Windows PowerShell에서 프로젝트 폴더로 이동합니다.
+
+```powershell
+cd C:\AI_study\debugmate-rag
+```
+
+정상적으로 활성화되면 터미널 앞에 `(.venv)`가 표시됩니다.
+
+```text
+(.venv) PS C:\AI_study\debugmate-rag>
+```
+
+---
+
+### 4. PowerShell 실행 정책 오류가 날 경우
+
+만약 아래와 같은 오류가 발생하면:
+
+```text
+running scripts is disabled on this system
+```
+
+다음 명령어를 실행합니다.
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+```
+
+그다음 다시 가상환경을 활성화합니다.
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-macOS / Linux:
+한 줄로 실행하려면 다음 명령어를 사용할 수 있습니다.
 
-```bash
-source .venv/bin/activate
+```powershell
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& .\.venv\Scripts\Activate.ps1)
 ```
 
-### 4. 패키지 설치
+---
 
-```bash
+### 5. 패키지 설치
+
+가상환경이 활성화된 상태에서 패키지를 설치합니다.
+
+```powershell
 python -m pip install -U pip
 python -m pip install -r requirements.txt
 ```
 
-### 5. 환경변수 설정
+---
+
+### 6. 환경변수 설정
 
 프로젝트 루트에 `.env` 파일을 생성합니다.
+
+```powershell
+notepad .env
+```
+
+아래 내용을 입력하고 저장합니다.
 
 ```text
 OPENAI_API_KEY=본인_API_KEY
@@ -415,7 +482,14 @@ OPENAI_API_KEY=본인_API_KEY
 
 `.env` 파일은 GitHub에 업로드하지 않습니다.
 
-### 6. Streamlit 실행
+---
+
+### 7. Streamlit 실행
+
+```powershell
+streamlit run app.py
+```
+
 
 ```bash
 streamlit run app.py
