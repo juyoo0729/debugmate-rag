@@ -839,3 +839,9 @@ DebugMate RAG는 AI 학습자가 실제로 겪은 오류 기록을 기반으로,
 ## Streamlit 데모 화면
 
 ![DebugMate RAG Streamlit Demo](assets/streamlit_full_page.png)
+
+## RAGAS 평가 결과
+
+![DebugMate RAGAS Results](assets/ragas_results.png)
+
+초기 MVP 평가 결과, 검색된 context의 precision과 recall은 높게 나타났지만 일부 질문에서 answer relevancy와 faithfulness가 낮게 측정되었다. 이는 현재 rule-based router와 기본 프롬프트 기반 구조의 한계로, 향후 LLM router, hybrid search, reranker, 프롬프트 개선을 통해 보완할 수 있다.
