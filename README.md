@@ -242,6 +242,3 @@ DebugMate RAG는 AI 학습자가 실제로 겪은 오류 기록을 기반으로,
 
 이 프로젝트는 단순한 챗봇이 아니라, 학습자의 오류 경험을 데이터화하고 다시 활용하는 개인화된 디버깅 보조 시스템을 목표로 합니다.
 
-![Streamlit Demo](assets/streamlit_full_page.png)
-
-![RAGAS Results](assets/ragas_results.png)
