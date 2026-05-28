@@ -48,6 +48,21 @@ def generate_answer(
     """
 
     retrieved_docs = search_result["documents"]
+
+    if not retrieved_docs:
+        return {
+            "query": query,
+            "route": search_result["route"],
+            "route_description": search_result["route_description"],
+            "metadata_filter": search_result["metadata_filter"],
+            "answer": (
+                "관련 문서를 찾지 못했습니다. 질문을 조금 더 구체적으로 입력하거나 "
+                "질문 유형 자동 분류를 끄고 다시 검색해 보세요."
+            ),
+            "sources": [],
+            "retrieved_documents": [],
+        }
+
     context = format_context(retrieved_docs)
 
     llm = ChatOpenAI(

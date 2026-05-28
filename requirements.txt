@@ -1,5 +1,5 @@
-streamlit
-python-dotenv
+streamlit==1.57.0
+python-dotenv==1.2.2
 
 langchain==0.1.20
 langchain-core==0.1.52
@@ -9,12 +9,12 @@ langchain-text-splitters==0.0.2
 langchain-chroma==0.1.4
 
 chromadb==0.5.23
-openai
-pandas
-numpy
-scikit-learn
+openai==1.109.1
+pandas==3.0.3
+numpy==1.26.4
+scikit-learn==1.8.0
 
 ragas==0.1.21
-datasets
-pypdf
-matplotlib
+datasets==4.8.5
+pypdf==6.12.2
+matplotlib==3.10.9

@@ -169,7 +169,7 @@ def get_route_filter(route: str) -> Dict[str, str] | None:
 
     config = ROUTE_CONFIGS.get(route, ROUTE_CONFIGS["general"])
 
-    if route == "general":
+    if config == ROUTE_CONFIGS["general"]:
         return None
 
     return {

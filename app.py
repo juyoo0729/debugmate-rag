@@ -25,6 +25,7 @@ st.set_page_config(
 )
 
 
+@st.cache_resource(show_spinner=False)
 def get_vectorstore():
     docs = load_debugmate_documents(data_dir=str(PROJECT_ROOT / "data"))
 
@@ -42,7 +43,7 @@ def main():
     st.title("DebugMate RAG")
     st.caption("AI 학습자를 위한 오류 해결 RAG Assistant")
 
-    api_key_exists = os.environ.get("OPENAI_API_KEY") is not None
+    api_key_exists = bool(os.environ.get("OPENAI_API_KEY", "").strip())
 
     if not api_key_exists:
         st.error(
