@@ -835,3 +835,7 @@ results/debugmate_ragas_results.csv
 ## 한 줄 요약
 
 DebugMate RAG는 AI 학습자가 실제로 겪은 오류 기록을 기반으로, RAG 검색과 source citation을 통해 개인화된 오류 해결 답변을 제공하는 DLthon용 MVP입니다.
+
+## Streamlit 데모 화면
+
+![DebugMate RAG Streamlit Demo](assets/streamlit_full_page.png)
