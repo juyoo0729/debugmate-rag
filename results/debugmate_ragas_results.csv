@@ -1,0 +1,132 @@
+﻿question,answer,contexts,ground_truth,faithfulness,answer_relevancy,context_precision,context_recall,project,chunk_size,chunk_overlap,k
+ModuleNotFoundError: No module named 'datasets' 오류는 어떻게 해결하나요?,"원인:
+- 현재 Jupyter 커널이 사용하는 Python 환경에 `datasets` 패키지가 설치되어 있지 않거나, PowerShell에서 패키지를 설치한 Python 환경과 Jupyter Notebook이 사용하는 Python 커널이 다를 수 있습니다.
+
+해결 방법:
+1. 현재 Jupyter 커널의 Python 경로를 확인합니다. 아래 코드를 Jupyter Notebook에서 실행하세요.
+   ```python
+   import sys
+   print(sys.executable)
+   ```
+2. 확인한 경로에 `datasets` 패키지를 설치합니다. 아래 명령어를 PowerShell에서 실행하세요.
+   ```powershell
+   python -m pip install datasets
+   ```
+   또는 프로젝트의 `requirements.txt` 파일을 기준으로 설치하려면 다음 명령어를 사용하세요.
+   ```powershell
+   python -m pip install -r requirements.txt
+   ```
+
+주의사항:
+- VS Code 터미널에서 설치한 패키지가 Jupyter Notebook 커널에 바로 적용되지 않을 수 있습니다. 설치 후에는 Jupyter 커널을 재시작해야 합니다.
+
+참고 문서:
+- error_logs.txt","[""# DebugMate RAG 오류 기록 데이터셋\n\n이 문서는 AI 학습 과정에서 반복적으로 발생하는 오류의 원인, 해결 방법, 주의사항을 정리한 RAG 검색용 오류 기록 문서이다.\n\n---\n\n# 오류 1: ModuleNotFoundError: No module named 'datasets'\n\n## 상황\n\nJupyter Notebook에서 다음 코드를 실행했을 때 오류가 발생했다.\n\n```python\nfrom datasets import Dataset\n```\n\n오류 메시지:\n\n```text\nModuleNotFoundError: No module named 'datasets'\n```\n\n## 원인\n\n현재 Jupyter 커널이 사용하는 Python 환경에 `datasets` 패키지가 설치되어 있지 않다.\n\n또는 PowerShell에서 패키지를 설치한 Python 환경과 Jupyter Notebook이 사용하는 Python 커널이 다를 수 있다.\n\n## 해결 방법\n\n먼저 현재 Jupyter 커널의 Python 경로를 확인한다.\n\n```python\nimport sys\nprint(sys.executable)\n```\n\n그다음 현재 커널이 사용하는 Python 환경에 `datasets`를 설치한다.\n\n```powershell\npython -m pip install datasets\n```\n\n또는 프로젝트의 `requirements.txt`를 기준으로 설치한다.\n\n```powershell\npython -m pip install -r requirements.txt\n```\n\n## 주의사항\n\nVS Code 터미널에서 설치한 패키지가 Jupyter Notebook 커널에 바로 적용되지 않을 수 있다.\n\n설치 후에는 Jupyter 커널을 재시작해야 한다.\n\n## 관련 태그\n\npackage_error, datasets, jupyter, python_env\n\n---\n\n# 오류 2: ModuleNotFoundError: No module named 'ragas'\n\n## 상황""
+ '---\n\n# 오류 2: ModuleNotFoundError: No module named \'ragas\'\n\n## 상황\n\nRAGAS 평가 코드를 실행할 때 다음 import에서 오류가 발생했다.\n\n```python\nfrom ragas import evaluate\n```\n\n오류 메시지:\n\n```text\nModuleNotFoundError: No module named \'ragas\'\n```\n\n## 원인\n\n현재 Python 가상환경에 `ragas` 패키지가 설치되어 있지 않다.\n\n또는 Jupyter Notebook이 프로젝트 가상환경이 아닌 전역 Python을 사용하고 있을 수 있다.\n\n## 해결 방법\n\n현재 가상환경이 활성화되어 있는지 확인한다.\n\n```powershell\npython --version\npython -c ""import sys; print(sys.executable)""\n```\n\n그다음 `ragas`를 설치한다.\n\n```powershell\npython -m pip install ragas==0.1.21\n```\n\n프로젝트 전체 의존성을 설치하려면 다음 명령어를 사용한다.\n\n```powershell\npython -m pip install -r requirements.txt\n```\n\n## 주의사항\n\nRAGAS는 버전별 API 차이가 있을 수 있다.\n\n강의 코드나 기존 예제가 `ragas==0.1.21` 기준이라면 최신 버전보다 고정 버전을 사용하는 것이 안정적이다.\n\n## 관련 태그\n\npackage_error, ragas, rag_evaluation, python_env\n\n---\n\n# 오류 3: ModuleNotFoundError: No module named \'langchain_core\'\n\n## 상황\n\nLangChain 관련 코드를 실행할 때 다음 import에서 오류가 발생했다.\n\n```python\nfrom langchain_core.documents import Document\n```\n\n오류 메시지:'
+ '```text\nModuleNotFoundError: No module named \'langchain_community.chat_models.vertexai\'\n```\n\n## 원인\n\n`ragas`, `langchain-community`, `langchain-core` 사이의 버전 조합이 맞지 않을 수 있다.\n\n특정 RAGAS 버전이 기대하는 LangChain community 모듈 구조와 현재 설치된 버전의 구조가 다를 수 있다.\n\n## 해결 방법\n\n기존 패키지를 최신으로 무작정 올리기보다, 안정적으로 동작했던 버전 조합을 사용한다.\n\n권장 버전 예시:\n\n```text\nragas==0.1.21\nlangchain==0.1.20\nlangchain-core==0.1.52\nlangchain-community==0.0.38\nlangchain-openai==0.1.7\n```\n\n설치 명령어:\n\n```powershell\npython -m pip install -r requirements.txt\n```\n\n## 주의사항\n\nLangChain 계열은 버전 호환성이 중요하다.\n\n오류가 발생하면 무작정 `pip install -U`로 전체 업그레이드하기보다, 프로젝트에서 검증한 버전으로 고정하는 것이 좋다.\n\n## 관련 태그\n\nversion_error, ragas, langchain, langchain_community\n\n---\n\n# 오류 5: OpenAIError: The api_key client option must be set\n\n## 상황\n\nOpenAI Embedding 또는 ChatOpenAI를 실행할 때 오류가 발생했다.\n\n예시 코드:\n\n```python\nembeddings = OpenAIEmbeddings()\nllm = ChatOpenAI(model=""gpt-4o-mini"")\n```\n\n오류 메시지:']","현재 Python 또는 Jupyter 커널 환경에 datasets 패키지가 설치되어 있지 않기 때문에 발생하며, 현재 커널의 Python 경로를 확인한 뒤 python -m pip install datasets 또는 requirements.txt 설치를 실행해야 한다.",1.0,0.808491581179231,0.9999999999,1.0,DebugMate RAG,1000,100,3
+OpenAI API 키 오류가 났을 때 어떻게 해야 하나요?,"원인:
+- OpenAI API 키가 현재 Python 실행 환경에 설정되어 있지 않거나, `.env` 파일이 존재하지만 Notebook이나 Streamlit 앱에서 제대로 로드되지 않았습니다.
+
+해결 방법:
+1. 프로젝트 루트에 `.env` 파일을 생성합니다. 파일 내용은 다음과 같습니다.
+   ```text
+   OPENAI_API_KEY=본인_API_KEY
+   ```
+2. Python 코드에서 `.env` 파일을 로드합니다. 아래 코드를 사용하세요.
+   ```python
+   from dotenv import load_dotenv
+   import os
+
+   load_dotenv("".env"")
+
+   print(os.environ.get(""OPENAI_API_KEY"") is not None)
+   ```
+3. 만약 Notebook이 `notebooks/` 폴더 안에서 실행된다면, 상위 폴더의 `.env` 파일을 로드하기 위해 다음 코드를 사용합니다.
+   ```python
+   load_dotenv(""../.env"")
+   ```
+
+주의사항:
+- API 키를 노트북이나 GitHub에 직접 적지 않도록 주의해야 합니다. GitHub에 올리기 전, 다음 명령어로 키 문자열이 남아 있는지 확인하는 것이 좋습니다.
+   ```powershell
+   Select-String -Path .\notebooks\*.ipynb -Pattern ""sk-""
+   ```
+
+참고 문서:
+- error_logs.txt","['```python\nembeddings = OpenAIEmbeddings()\nllm = ChatOpenAI(model=""gpt-4o-mini"")\n```\n\n오류 메시지:\n\n```text\nOpenAIError: The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable\n```\n\n## 원인\n\n현재 Python 실행 환경에 `OPENAI_API_KEY` 환경변수가 설정되어 있지 않다.\n\n또는 `.env` 파일이 있지만 Notebook이나 Streamlit 앱에서 제대로 로드하지 못했다.\n\n## 해결 방법\n\n프로젝트 루트에 `.env` 파일을 만든다.\n\n```text\nOPENAI_API_KEY=본인_API_KEY\n```\n\nPython 코드에서 `.env`를 로드한다.\n\n```python\nfrom dotenv import load_dotenv\nimport os\n\nload_dotenv("".env"")\n\nprint(os.environ.get(""OPENAI_API_KEY"") is not None)\n```\n\nNotebook이 `notebooks/` 폴더 안에서 실행된다면 다음처럼 상위 폴더의 `.env`를 로드한다.\n\n```python\nload_dotenv(""../.env"")\n```\n\n## 주의사항\n\nAPI 키를 노트북이나 GitHub에 직접 적으면 안 된다.\n\nGitHub에 올리기 전 다음 명령어로 키 문자열이 남아 있는지 확인한다.\n\n```powershell\nSelect-String -Path .\\notebooks\\*.ipynb -Pattern ""sk-""\n```\n\n## 관련 태그\n\napi_key_error, openai, dotenv, security\n\n---\n\n# 오류 6: SyntaxError: invalid syntax when running python -m venv in notebook'
+ '```text\nModuleNotFoundError: No module named \'langchain_community.chat_models.vertexai\'\n```\n\n## 원인\n\n`ragas`, `langchain-community`, `langchain-core` 사이의 버전 조합이 맞지 않을 수 있다.\n\n특정 RAGAS 버전이 기대하는 LangChain community 모듈 구조와 현재 설치된 버전의 구조가 다를 수 있다.\n\n## 해결 방법\n\n기존 패키지를 최신으로 무작정 올리기보다, 안정적으로 동작했던 버전 조합을 사용한다.\n\n권장 버전 예시:\n\n```text\nragas==0.1.21\nlangchain==0.1.20\nlangchain-core==0.1.52\nlangchain-community==0.0.38\nlangchain-openai==0.1.7\n```\n\n설치 명령어:\n\n```powershell\npython -m pip install -r requirements.txt\n```\n\n## 주의사항\n\nLangChain 계열은 버전 호환성이 중요하다.\n\n오류가 발생하면 무작정 `pip install -U`로 전체 업그레이드하기보다, 프로젝트에서 검증한 버전으로 고정하는 것이 좋다.\n\n## 관련 태그\n\nversion_error, ragas, langchain, langchain_community\n\n---\n\n# 오류 5: OpenAIError: The api_key client option must be set\n\n## 상황\n\nOpenAI Embedding 또는 ChatOpenAI를 실행할 때 오류가 발생했다.\n\n예시 코드:\n\n```python\nembeddings = OpenAIEmbeddings()\nllm = ChatOpenAI(model=""gpt-4o-mini"")\n```\n\n오류 메시지:'
+ '## 원인\n\n`.venv` 폴더가 없거나, 가상환경 생성이 실패해서 `Scripts\\Activate.ps1` 파일이 존재하지 않는다.\n\n또는 현재 PowerShell 위치가 프로젝트 폴더가 아닐 수 있다.\n\n## 해결 방법\n\n먼저 현재 위치를 확인한다.\n\n```powershell\npwd\n```\n\n프로젝트 폴더로 이동한다.\n\n```powershell\ncd C:\\AI_study\\debugmate-rag\n```\n\n가상환경을 생성한다.\n\n```powershell\npython -m venv .venv\n```\n\n생성 후 활성화 파일이 있는지 확인한다.\n\n```powershell\nTest-Path C:\\AI_study\\debugmate-rag\\.venv\\Scripts\\Activate.ps1\n```\n\n결과가 `True`이면 활성화한다.\n\n```powershell\n(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& C:\\AI_study\\debugmate-rag\\.venv\\Scripts\\Activate.ps1)\n```\n\n## 주의사항\n\nVS Code에서 `.venv` 폴더를 직접 만들면 안 된다.\n\n반드시 `python -m venv .venv` 명령어로 만들어야 한다.\n\n## 관련 태그\n\nvenv_error, powershell, activate, python_env\n\n---\n\n# 오류 9: Python 3.12에서 chroma-hnswlib 빌드 실패\n\n## 상황\n\n`chromadb` 설치 중 다음 오류가 발생했다.\n\n```text\nFailed building wheel for chroma-hnswlib\nerror: Microsoft Visual C++ 14.0 or greater is required\n```\n\n## 원인\n\nWindows + Python 3.12 환경에서 `chroma-hnswlib`의 사전 빌드 wheel을 사용하지 못하고 직접 컴파일하려고 했다.']","프로젝트 루트에 .env 파일을 만들고 OPENAI_API_KEY를 설정한 뒤, python-dotenv의 load_dotenv로 해당 파일을 로드해야 한다. API 키는 GitHub에 올리면 안 된다.",1.0,0.8082822898877443,0.99999999995,1.0,DebugMate RAG,1000,100,3
+git push rejected 오류는 왜 발생하나요?,"원인:
+- `git push rejected` 오류는 원격 저장소에 로컬에는 없는 commit이 이미 존재할 때 발생합니다. 이는 주로 GitHub에서 README.md를 먼저 생성했거나, 원격 저장소에 초기 commit이 있는 경우, 또는 로컬과 원격 저장소의 기록이 서로 다를 때 발생합니다.
+
+해결 방법:
+1. 원격 저장소의 변경사항을 먼저 가져옵니다. 아래 명령어를 입력하세요.
+   ```powershell
+   git pull origin main --allow-unrelated-histories
+   ```
+2. 충돌이 없으면 다시 push합니다.
+   ```powershell
+   git push -u origin main
+   ```
+3. 만약 충돌이 발생하면, VS Code에서 충돌 파일을 열고 정리한 뒤 commit합니다.
+   ```powershell
+   git add .
+   git commit -m ""Resolve merge conflict""
+   git push
+   ```
+
+주의사항:
+- `--allow-unrelated-histories` 옵션은 로컬과 원격 저장소의 시작 기록이 다를 때만 사용해야 합니다. 무작정 `git push --force`를 사용하면 원격 저장소의 기록이 덮어써질 수 있으므로 주의해야 합니다.
+
+참고 문서:
+- git_errors.txt","['# DebugMate RAG Git / GitHub 오류 기록 데이터셋\n\n이 문서는 AI 학습 프로젝트를 GitHub로 관리할 때 자주 발생하는 Git 오류와 해결 방법을 정리한 RAG 검색용 문서이다.\n\n---\n\n# 오류 1: git push rejected - fetch first\n\n## 상황\n\n로컬에서 commit 후 GitHub에 push할 때 다음 오류가 발생했다.\n\n```text\n! [rejected] main -> main (fetch first)\nerror: failed to push some refs to \'https://github.com/사용자명/저장소명.git\'\nhint: Updates were rejected because the remote contains work that you do not have locally.\n```\n\n## 원인\n\nGitHub 원격 저장소에 로컬에는 없는 commit이 이미 존재한다.\n\n주로 다음 상황에서 발생한다.\n\n1. GitHub에서 README.md를 먼저 생성했다.\n2. 원격 저장소에 초기 commit이 있다.\n3. 로컬 프로젝트를 따로 만들고 나중에 remote를 연결했다.\n4. 로컬과 원격 저장소의 기록이 서로 다르다.\n\n## 해결 방법\n\n원격 저장소의 변경사항을 먼저 가져온다.\n\n```powershell\ngit pull origin main --allow-unrelated-histories\n```\n\n충돌이 없으면 다시 push한다.\n\n```powershell\ngit push -u origin main\n```\n\n충돌이 발생하면 VS Code에서 충돌 파일을 열고 정리한 뒤 commit한다.\n\n```powershell\ngit add .\ngit commit -m ""Resolve merge conflict""\ngit push\n```\n\n## 주의사항\n\n`--allow-unrelated-histories`는 로컬과 원격 저장소의 시작 기록이 다를 때 사용한다.'
+ '## 주의사항\n\n`--allow-unrelated-histories`는 로컬과 원격 저장소의 시작 기록이 다를 때 사용한다.\n\n무작정 `git push --force`를 쓰면 원격 저장소 기록이 덮어써질 수 있으므로 주의한다.\n\n## 관련 태그\n\ngit_error, push_rejected, fetch_first, github, merge\n\n---\n\n# 오류 2: remote origin already exists\n\n## 상황\n\n원격 저장소를 연결하려고 할 때 다음 오류가 발생했다.\n\n```text\nerror: remote origin already exists.\n```\n\n## 원인\n\n이미 `origin`이라는 이름의 remote가 등록되어 있다.\n\n같은 저장소에 대해 `git remote add origin ...`을 여러 번 실행하면 발생한다.\n\n## 확인 방법\n\n등록된 remote를 확인한다.\n\n```powershell\ngit remote -v\n```\n\n## 해결 방법 1: 기존 origin URL을 그대로 사용\n\n이미 올바른 GitHub 주소가 등록되어 있다면 다시 추가할 필요 없다.\n\n```powershell\ngit push -u origin main\n```\n\n## 해결 방법 2: origin URL 수정\n\n잘못된 주소가 등록되어 있다면 URL을 수정한다.\n\n```powershell\ngit remote set-url origin https://github.com/juyoo0729/debugmate-rag.git\n```\n\n확인:\n\n```powershell\ngit remote -v\n```\n\n## 해결 방법 3: origin 삭제 후 재등록\n\n필요하면 기존 origin을 삭제하고 다시 등록한다.\n\n```powershell\ngit remote remove origin\ngit remote add origin https://github.com/juyoo0729/debugmate-rag.git\n```\n\n## 주의사항'
+ '## 주의사항\n\n`remote origin already exists`는 치명적인 오류가 아니다.\n\n이미 remote가 있으니 새로 추가하지 말고 확인하거나 수정하면 된다.\n\n## 관련 태그\n\ngit_error, remote_origin, github, repository\n\n---\n\n# 오류 3: branch 이름이 master와 main으로 달라짐\n\n## 상황\n\n로컬 브랜치는 `master`이고 GitHub 기본 브랜치는 `main`일 때 push가 헷갈릴 수 있다.\n\n예시:\n\n```text\nOn branch master\n```\n\n또는:\n\n```text\nerror: src refspec main does not match any\n```\n\n## 원인\n\nGit 초기화 시 기본 브랜치 이름이 `master`로 생성되었지만, GitHub는 보통 `main`을 기본 브랜치로 사용한다.\n\n## 해결 방법\n\n로컬 브랜치 이름을 `main`으로 변경한다.\n\n```powershell\ngit branch -M main\n```\n\n그다음 push한다.\n\n```powershell\ngit push -u origin main\n```\n\n## 확인 방법\n\n```powershell\ngit branch\n```\n\n현재 브랜치 앞에 `*`가 표시된다.\n\n```text\n* main\n```\n\n## 주의사항\n\n새 프로젝트에서는 처음부터 다음 순서로 진행하면 혼란을 줄일 수 있다.\n\n```powershell\ngit init\ngit branch -M main\ngit remote add origin https://github.com/juyoo0729/debugmate-rag.git\ngit add .\ngit commit -m ""Initial commit""\ngit push -u origin main\n```\n\n## 관련 태그\n\ngit_error, branch, main, master, github\n\n---\n\n# 오류 4: nothing to commit, working tree clean\n\n## 상황']",원격 저장소에 로컬에는 없는 commit이 있어서 발생한다. git pull origin main --allow-unrelated-histories로 원격 변경사항을 가져온 뒤 충돌을 해결하고 다시 push해야 한다.,0.6153846153846154,0.0,0.9999999999666667,0.6666666666666666,DebugMate RAG,1000,100,3
+RunPod에서 Network Volume은 언제 필요한가요?,"원인:
+- Network Volume은 Pod와 독립적으로 데이터를 보관하는 저장공간으로, 대용량 모델, 데이터셋, 체크포인트를 장기간 보관할 필요가 있을 때 유용합니다. 여러 Pod에서 같은 데이터를 재사용하거나 Pod를 삭제해도 데이터가 유지되어야 할 경우에 필요합니다.
+
+해결 방법:
+1. 대용량 모델 파일을 반복해서 다운로드하고 싶지 않을 때, Network Volume을 생성합니다.
+2. 학습 체크포인트를 장기간 보관해야 할 때, Network Volume을 사용합니다.
+3. 여러 Pod에서 같은 데이터를 재사용해야 할 경우, Network Volume을 설정합니다.
+4. Pod를 삭제해도 데이터가 유지되어야 할 경우, Network Volume을 활용합니다.
+
+주의사항:
+- Network Volume은 비용이 발생하므로, 최종 프로젝트의 모델과 데이터 규모가 확정된 뒤에 만드는 것이 좋습니다. 초기 실습이나 작은 RAG 프로젝트에서는 꼭 필요하지 않을 수 있습니다.
+
+참고 문서:
+- runpod_notes.txt","['## 이유\n\n`/workspace`는 RunPod 작업 공간으로 사용되는 경우가 많고, 프로젝트 파일을 관리하기 쉽다.\n\n반대로 `/root`, `/tmp`, `/usr/local` 등에 프로젝트를 만들면 Pod 설정에 따라 파일이 사라지거나 찾기 어려워질 수 있다.\n\n## 주의사항\n\n중요한 코드는 반드시 GitHub에 push해야 한다.\n\nRunPod 저장공간은 설정과 Pod 상태에 따라 유지 여부가 달라질 수 있다.\n\n## 관련 태그\n\nrunpod, workspace, github, project_path\n\n---\n\n# 주제 4: Network Volume은 언제 필요한가\n\n## 상황\n\n사용자가 RunPod에서 Network Volume을 만들지 고민한다.\n\n## 설명\n\nNetwork Volume은 Pod와 독립적으로 데이터를 보관하는 저장공간이다.\n\n대용량 모델, 데이터셋, 체크포인트를 장기간 보관하려면 유용하다.\n\n## 필요한 경우\n\nNetwork Volume이 필요한 경우는 다음과 같다.\n\n1. 대용량 모델 파일을 반복해서 다운로드하고 싶지 않을 때\n2. 학습 체크포인트를 장기간 보관해야 할 때\n3. 여러 Pod에서 같은 데이터를 재사용해야 할 때\n4. Pod를 삭제해도 데이터가 유지되어야 할 때\n\n## 아직 필요하지 않은 경우\n\n초기 실습이나 작은 RAG 프로젝트에서는 꼭 필요하지 않다.\n\n특히 OpenAI API 기반 RAG는 embedding과 LLM 계산이 외부 API에서 수행되므로 RunPod GPU와 대용량 저장공간이 필수는 아니다.\n\n## 주의사항\n\nNetwork Volume은 비용이 발생한다.\n\n또한 특정 데이터센터에 묶여 사용할 수 있는 GPU 종류가 제한될 수 있다.\n\n따라서 최종 프로젝트의 모델과 데이터 규모가 확정된 뒤 만드는 것이 좋다.\n\n## 관련 태그\n\nnetwork_volume, storage_cost, runpod, gpu_limit\n\n---\n\n# 주제 5: RunPod 비용 관리 전략\n\n## 상황'
+ '### 2. Volume Disk\n\nVolume Disk는 보통 `/workspace`에 연결되는 작업 공간이다.\n\n예:\n\n```text\n/workspace\n```\n\n특징:\n\n* Pod 생명주기 동안 작업 파일을 유지할 수 있다.\n* Stop/Start에서는 유지될 수 있다.\n* Terminate 또는 설정에 따라 삭제될 수 있으므로 중요한 코드는 GitHub에 백업해야 한다.\n\n### 3. Network Volume\n\nNetwork Volume은 Pod와 독립적으로 유지되는 영구 저장공간이다.\n\n특징:\n\n* Pod를 삭제해도 데이터가 유지된다.\n* 여러 Pod에서 재사용할 수 있다.\n* 비용이 발생한다.\n* 특정 데이터센터에 묶일 수 있어 선택 가능한 GPU가 제한될 수 있다.\n\n## 결론\n\n초기 실습 단계에서는 Network Volume을 바로 만들기보다 GitHub로 코드 관리하고, 필요한 파일만 로컬에 백업하는 전략이 안전하다.\n\n## 관련 태그\n\nrunpod, storage, workspace, network_volume, volume_disk\n\n---\n\n# 주제 3: RunPod에서는 /workspace 아래에 프로젝트를 만드는 것이 좋다\n\n## 상황\n\nRunPod에서 JupyterLab, SSH, VS Code Remote-SSH로 접속해 작업할 때 파일 저장 위치가 헷갈릴 수 있다.\n\n## 권장 방식\n\nRunPod에서는 프로젝트를 `/workspace` 아래에 만든다.\n\n예:\n\n```bash\ncd /workspace\ngit clone https://github.com/juyoo0729/debugmate-rag.git\ncd debugmate-rag\n```\n\n또는 새 프로젝트라면:\n\n```bash\ncd /workspace\nmkdir debugmate-rag\ncd debugmate-rag\n```\n\n## 이유\n\n`/workspace`는 RunPod 작업 공간으로 사용되는 경우가 많고, 프로젝트 파일을 관리하기 쉽다.'
+ '## 관련 태그\n\nnetwork_volume, storage_cost, runpod, gpu_limit\n\n---\n\n# 주제 5: RunPod 비용 관리 전략\n\n## 상황\n\nRunPod 비용이 예상보다 많이 나올 수 있다.\n\n## 원인\n\nGPU Pod를 켜둔 상태로 오래 두거나, Network Volume을 큰 용량으로 만들면 비용이 계속 발생할 수 있다.\n\n## 비용 관리 방법\n\n1. 작업이 끝나면 Pod를 중지하거나 삭제한다.\n2. 장기 보관이 필요한 파일은 GitHub나 로컬에 백업한다.\n3. Network Volume은 필요한 시점에만 만든다.\n4. 큰 모델을 쓰기 전에는 예상 VRAM과 저장공간을 계산한다.\n5. 실습 초기에는 작은 GPU 또는 로컬 환경으로 먼저 검증한다.\n\n## 추천 전략\n\n초기 단계:\n\n```text\n로컬 PC + GitHub + OpenAI API\n```\n\n중간 단계:\n\n```text\nRunPod JupyterLab + GitHub\n```\n\n고급 단계:\n\n```text\nRunPod GPU + Network Volume + 오픈소스 LLM\n```\n\n## 관련 태그\n\nrunpod, cost, gpu_cost, network_volume, budget\n\n---\n\n# 주제 6: OpenAI API 기반 RAG는 RunPod GPU를 많이 사용하지 않는다\n\n## 상황\n\n사용자가 RAGAS 평가나 OpenAIEmbeddings를 RunPod GPU에서 돌리면 GPU가 많이 사용된다고 생각할 수 있다.\n\n## 설명\n\nOpenAIEmbeddings와 ChatOpenAI는 OpenAI 서버에서 계산된다.\n\n따라서 RunPod GPU 자원을 많이 사용하지 않는다.\n\nRunPod에서는 주로 다음 작업을 수행한다.\n\n* Python 코드 실행\n* 문서 로드\n* chunk 분할\n* API 호출\n* 결과 저장\n\n실제 embedding 계산과 LLM 답변 생성은 OpenAI API 서버에서 수행된다.\n\n## 결론']","대용량 모델, 데이터셋, 학습 체크포인트를 Pod와 독립적으로 장기간 보관해야 할 때 필요하다. 초기 RAG 실습에서는 GitHub와 로컬 백업으로 충분할 수 있다.",0.09090909090909091,0.8509069382782349,0.9999999999666667,1.0,DebugMate RAG,1000,100,3
+Chroma 설치 중 chroma-hnswlib 빌드 실패가 발생하면 어떻게 하나요?,"원인:
+- Windows에서 Python 3.12 환경에서 `chroma-hnswlib`의 빌드가 실패하는 주된 원인은 Microsoft C++ Build Tools가 없거나, Python 버전 조합이 맞지 않아 직접 컴파일을 시도하기 때문입니다.
+
+해결 방법:
+1. Python 3.11로 가상환경을 새로 생성합니다. 아래 명령어를 사용하세요.
+   ```powershell
+   & ""C:\Users\yoehe\AppData\Local\Programs\Python\Python311\python.exe"" -m venv C:\AI_study\debugmate-rag\.venv
+   ```
+2. 가상환경을 활성화합니다. 아래 명령어를 사용하세요.
+   ```powershell
+   (Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& C:\AI_study\debugmate-rag\.venv\Scripts\Activate.ps1)
+   ```
+3. Python 버전을 확인하여 3.11이 맞는지 확인합니다.
+   ```powershell
+   python --version
+   ```
+4. `requirements.txt` 파일을 사용하여 필요한 패키지를 설치합니다.
+   ```powershell
+   python -m pip install -r requirements.txt
+   ```
+5. 설치가 성공적으로 완료되었는지 확인합니다.
+   ```powershell
+   python -c ""import chromadb; import langchain_chroma; print('Chroma 설치 성공')""
+   ```
+
+주의사항:
+- 가상환경을 활성화한 후 `python --version` 명령어를 실행했을 때 `Python 3.12`가 출력되면 잘못된 가상환경을 사용 중일 수 있으니, 반드시 Python 3.11이 활성화된 가상환경인지 확인해야 합니다.
+
+참고 문서:
+- ragas_langchain_errors.txt","['또는:\n\n```powershell\npython -m pip install -r requirements.txt\n```\n\n설치 확인:\n\n```powershell\npython -c ""import chromadb; import langchain_chroma; print(\'Chroma 설치 성공\')""\n```\n\n## 주의사항\n\nWindows에서 Python 3.12로 Chroma 설치 시 `chroma-hnswlib` 빌드 오류가 발생할 수 있다.\n\n이 경우 Python 3.11 가상환경을 사용하는 것이 안정적이다.\n\n## 관련 태그\n\nchroma, chromadb, langchain_chroma, vector_db\n\n---\n\n# 오류 9: Python 3.12에서 chroma-hnswlib 빌드 실패\n\n## 상황\n\n`chromadb` 설치 중 다음 오류가 발생했다.\n\n```text\nFailed building wheel for chroma-hnswlib\nerror: Microsoft Visual C++ 14.0 or greater is required\n```\n\n## 원인\n\nWindows + Python 3.12 환경에서 `chroma-hnswlib`의 사전 빌드 wheel을 사용하지 못하고 직접 컴파일하려고 했다.\n\n하지만 Microsoft C++ Build Tools가 없거나, Python 버전 조합이 맞지 않아 빌드가 실패했다.\n\n## 해결 방법\n\nPython 3.11로 가상환경을 새로 생성한다.\n\n```powershell\n& ""C:\\Users\\yoehe\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"" -m venv C:\\AI_study\\debugmate-rag\\.venv\n```\n\n가상환경 활성화:'
+ '가상환경 활성화:\n\n```powershell\n(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& C:\\AI_study\\debugmate-rag\\.venv\\Scripts\\Activate.ps1)\n```\n\nPython 버전 확인:\n\n```powershell\npython --version\n```\n\n정상 예시:\n\n```text\nPython 3.11.9\n```\n\n그다음 설치한다.\n\n```powershell\npython -m pip install -r requirements.txt\n```\n\n설치 확인:\n\n```powershell\npython -c ""import chromadb; import langchain_chroma; print(\'Chroma 설치 성공\')""\n```\n\n## 주의사항\n\nChroma 설치가 필요하면 Python 3.11을 사용하는 것이 Windows에서 더 안정적이다.\n\n`python --version`이 `Python 3.12`로 나오면 잘못된 가상환경을 사용 중일 수 있다.\n\n## 관련 태그\n\nchroma_error, chromadb, chroma_hnswlib, python311, python312, build_tools\n\n---\n\n# 오류 10: Chroma vectorstore 파일 삭제 실패\n\n## 상황\n\nWindows에서 Chroma vectorstore 폴더를 삭제하려고 할 때 오류가 발생했다.\n\n```text\nPermissionError: 다른 프로세스가 파일을 사용 중이기 때문에 프로세스가 액세스할 수 없습니다\n```\n\n예시 파일:\n\n```text\nchroma.sqlite3\ndata_level0.bin\nheader.bin\nlength.bin\nlink_lists.bin\n```\n\n## 원인\n\nJupyter Notebook, Python 프로세스, Streamlit 앱이 Chroma DB 파일을 잡고 있다.\n\nWindows에서는 사용 중인 파일을 삭제할 수 없다.'
+ 'Jupyter Notebook, Python 프로세스, Streamlit 앱이 Chroma DB 파일을 잡고 있다.\n\nWindows에서는 사용 중인 파일을 삭제할 수 없다.\n\n## 해결 방법\n\n1. Jupyter 커널을 종료한다.\n2. Streamlit 서버를 종료한다.\n3. VS Code를 닫는다.\n4. Python 프로세스를 종료한다.\n\n```powershell\ntaskkill /F /IM python.exe\n```\n\n그다음 삭제한다.\n\n```powershell\nRemove-Item -Recurse -Force .\\vectorstore\\*\n```\n\n## 대안\n\n실험용 RAG에서는 디스크 저장 없이 메모리 Chroma를 사용할 수 있다.\n\n```python\nvectorstore = Chroma.from_documents(\n    documents=splits,\n    embedding=embeddings\n)\n```\n\n디스크에 저장하려면 `persist_directory`를 사용한다.\n\n```python\nvectorstore = Chroma.from_documents(\n    documents=splits,\n    embedding=embeddings,\n    persist_directory=""./vectorstore/debugmate""\n)\n```\n\n## 주의사항\n\n디스크 저장형 Chroma는 재사용성이 좋지만, Windows에서 파일 잠금 문제가 발생할 수 있다.\n\n초기 개발 단계에서는 메모리 Chroma로 먼저 검증하는 것이 편하다.\n\n## 관련 태그\n\nchroma, vectorstore, permission_error, windows, file_lock\n\n---\n\n# 오류 11: RAGAS 데이터셋 컬럼 이름 문제\n\n## 상황\n\nRAGAS 평가용 Dataset을 만들 때 컬럼 이름이 맞지 않아 평가가 실패하거나 예상과 다른 결과가 나온다.\n\n## 원인\n\nRAGAS 버전별로 기대하는 컬럼 이름이 다를 수 있다.\n\n일반적으로 다음 필드가 필요하다.']",Windows와 Python 3.12 조합에서 chroma-hnswlib 빌드가 실패할 수 있다. Python 3.11 가상환경을 사용하거나 Microsoft C++ Build Tools를 설치하는 방식으로 해결할 수 있다.,0.8333333333333334,0.0,0.9999999999666667,1.0,DebugMate RAG,1000,100,3
