@@ -638,3 +638,200 @@ RAGAS로 `faithfulness`, `answer_relevancy`, `context_precision`, `context_recal
 ## 21. 한 줄 요약
 
 DebugMate RAG는 AI 학습자가 반복적으로 겪는 개발 환경 오류와 라이브러리 오류를 문서화하고, RAG 기반 검색과 source citation을 통해 원인·해결 방법·주의사항을 제공하는 DLthon용 MVP 프로젝트입니다.
+
+---
+
+## 현재 구현 완료 기능
+
+DebugMate RAG MVP는 다음 기능을 구현했습니다.
+
+* AI 학습 오류 기록 데이터셋 구축
+* LangChain `TextLoader` 기반 문서 로드
+* 오류 유형별 metadata 부여
+* Rule-based Query Router 구현
+* Chroma 기반 vector search 구현
+* OpenAIEmbeddings 기반 문서 embedding
+* ChatOpenAI 기반 오류 해결 답변 생성
+* 참고 source 문서 출력
+* Streamlit 기반 웹 UI 구현
+* RAGAS 기반 답변 품질 평가
+
+---
+
+## 실행 방법
+
+### 1. 프로젝트 폴더 이동
+
+```powershell
+cd C:\AI_study\debugmate-rag
+```
+
+### 2. 가상환경 활성화
+
+```powershell
+(Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned) ; (& C:\AI_study\debugmate-rag\.venv\Scripts\Activate.ps1)
+```
+
+정상 확인:
+
+```powershell
+python --version
+```
+
+예상 출력:
+
+```text
+Python 3.11.9
+```
+
+### 3. Chroma 설치 확인
+
+```powershell
+python -c "import chromadb; import langchain_chroma; print('Chroma 설치 성공')"
+```
+
+### 4. 환경변수 설정
+
+프로젝트 루트에 `.env` 파일을 만들고 다음 값을 설정합니다.
+
+```text
+OPENAI_API_KEY=본인_API_KEY
+```
+
+`.env` 파일은 `.gitignore`에 의해 GitHub에 업로드되지 않습니다.
+
+확인:
+
+```powershell
+git check-ignore -v .env
+```
+
+### 5. Streamlit 실행
+
+```powershell
+streamlit run app.py
+```
+
+---
+
+## 예시 질문
+
+다음 질문으로 DebugMate RAG를 테스트할 수 있습니다.
+
+```text
+ModuleNotFoundError: No module named 'datasets' 오류는 어떻게 해결하나요?
+```
+
+```text
+OpenAI API 키 오류가 났을 때 어떻게 해야 하나요?
+```
+
+```text
+git push rejected 오류는 어떻게 해결하나요?
+```
+
+```text
+RunPod에서 Network Volume은 언제 필요한가요?
+```
+
+```text
+Chroma 설치할 때 chroma-hnswlib 빌드 실패가 납니다.
+```
+
+---
+
+## 시스템 구조
+
+```text
+사용자 오류 입력
+        ↓
+Rule-based Query Router
+        ↓
+Metadata Filter 선택
+        ↓
+Chroma Vector Search
+        ↓
+관련 오류 문서 검색
+        ↓
+ChatOpenAI 답변 생성
+        ↓
+원인 / 해결 방법 / 주의사항 / 참고 source 출력
+```
+
+---
+
+## RAGAS 평가
+
+DebugMate RAG는 RAGAS를 사용하여 답변 품질을 평가합니다.
+
+평가 지표는 다음과 같습니다.
+
+| 지표                  | 의미                |
+| ------------------- | ----------------- |
+| `faithfulness`      | 답변이 검색된 문서에 충실한가  |
+| `answer_relevancy`  | 답변이 질문과 관련 있는가    |
+| `context_precision` | 검색된 문서가 유용한가      |
+| `context_recall`    | 필요한 문서를 충분히 검색했는가 |
+
+평가 실행:
+
+```powershell
+python src\evaluation.py
+```
+
+결과 파일:
+
+```text
+results/debugmate_ragas_results.csv
+```
+
+---
+
+## 프로젝트 차별점
+
+단순 오류 해결은 GPT에게 직접 질문해도 가능하다.
+
+하지만 DebugMate RAG는 일반적인 답변이 아니라, 사용자가 실제로 겪은 오류 기록과 프로젝트 환경을 기반으로 답변한다.
+
+즉, DebugMate RAG의 핵심은 다음과 같다.
+
+* 개인 오류 경험을 데이터셋으로 축적
+* 프로젝트 환경 기준 해결 방법 제공
+* 참고 source 문서 출력
+* 반복 오류를 빠르게 재검색
+* RAGAS 평가를 통한 품질 확인
+
+---
+
+## 한계
+
+현재 MVP에는 다음 한계가 있습니다.
+
+1. Router가 rule-based 방식이므로 질문 표현이 다양해지면 분류 정확도가 떨어질 수 있습니다.
+2. 오류 데이터셋이 수동 작성 방식이므로 데이터 확장에 시간이 필요합니다.
+3. Chroma는 현재 메모리 기반으로 사용하며, 앱 실행 시 매번 vectorstore를 다시 생성합니다.
+4. RAGAS 평가는 참고 지표이며, 사람이 직접 보는 정성 평가도 함께 필요합니다.
+5. 실제 명령어를 자동 실행하지 않고, 해결 방법 안내까지만 제공합니다.
+
+---
+
+## 향후 개선 방향
+
+향후 다음 기능으로 확장할 수 있습니다.
+
+1. LLM 기반 Query Router 적용
+2. Hybrid Search 적용
+3. Reranker 적용
+4. 저장형 Chroma 또는 Qdrant 적용
+5. 오류 로그 자동 저장 기능 추가
+6. 사용자 피드백 저장
+7. RAGAS 평가 대시보드 구현
+8. FastAPI 백엔드 분리
+9. Docker 배포
+10. 최종 프로젝트용 AI Engineering Learning Copilot으로 확장
+
+---
+
+## 한 줄 요약
+
+DebugMate RAG는 AI 학습자가 실제로 겪은 오류 기록을 기반으로, RAG 검색과 source citation을 통해 개인화된 오류 해결 답변을 제공하는 DLthon용 MVP입니다.

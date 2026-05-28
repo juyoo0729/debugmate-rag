@@ -25,7 +25,6 @@ st.set_page_config(
 )
 
 
-@st.cache_resource
 def get_vectorstore():
     docs = load_debugmate_documents(data_dir=str(PROJECT_ROOT / "data"))
 
