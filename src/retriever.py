@@ -46,9 +46,9 @@ def build_vectorstore(
     """
     Chroma vectorstore를 생성한다.
 
-    기본값은 메모리 Chroma이다.
-    Streamlit cache / 기존 SQLite collection 꼬임을 피하기 위해
-    collection_name을 매번 새로 생성한다.
+    기본값은 메모리 Chroma(EphemeralClient)이다.
+    persist_directory가 있으면 고정 collection "debugmate"를 사용하고
+    기존 collection을 먼저 삭제한 뒤 새로 생성한다.
     """
 
     splits = split_documents(
@@ -58,37 +58,34 @@ def build_vectorstore(
     )
 
     embeddings = OpenAIEmbeddings()
-    collection_name = f"debugmate_{uuid4().hex}"
 
     if persist_directory:
+        collection_name = "debugmate"
         client = chromadb.PersistentClient(
             path=persist_directory,
             settings=Settings(
                 anonymized_telemetry=False,
             ),
         )
-
-        vectorstore = Chroma.from_documents(
-            documents=splits,
-            embedding=embeddings,
-            client=client,
-            collection_name=collection_name,
-        )
+        try:
+            client.delete_collection(collection_name)
+        except Exception:
+            pass
 
     else:
-        client = chromadb.Client(
-            Settings(
+        collection_name = f"debugmate_{uuid4().hex}"
+        client = chromadb.EphemeralClient(
+            settings=Settings(
                 anonymized_telemetry=False,
-                is_persistent=False,
             )
         )
 
-        vectorstore = Chroma.from_documents(
-            documents=splits,
-            embedding=embeddings,
-            client=client,
-            collection_name=collection_name,
-        )
+    vectorstore = Chroma.from_documents(
+        documents=splits,
+        embedding=embeddings,
+        client=client,
+        collection_name=collection_name,
+    )
 
     return vectorstore
 

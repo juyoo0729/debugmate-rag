@@ -52,6 +52,8 @@ def route_query(query: str) -> str:
         "branch",
         "main",
         "master",
+        "main branch",
+        "origin/main",
         "origin",
         "remote",
         "rejected",
